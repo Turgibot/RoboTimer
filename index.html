@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robo-Timer</title>
+    <link rel="icon" href="images/icon.png" type="image/x-icon">
+    <style>
+        * {
+          box-sizing: border-box;
+        }
+        .container {
+            display: flex; /* or inline-flex */
+            justify-content:space-between
+        }
+        body {
+          margin: 0;
+          font-family: system-ui;
+          font-size: 17px;
+        }
+        
+        #myVideo {
+          position: fixed;
+          right: 0;
+          bottom: 0;
+          min-width: 100%; 
+          min-height: 100%;
+        }
+        
+        .content {
+          position: fixed;
+          top: 0;
+          background: rgba(0, 0, 0, 0.5);
+          color: #f1f1f1;
+          width: 100%;
+          padding: 20px;
+        }
+        
+        #myBtn {
+          width: 100px;
+          font-size: 18px;
+          padding: 10px;
+          border: none;
+          background: rgb(241, 9, 9);
+          color: #fff;
+          cursor: pointer;
+          border-radius: 10%;
+          font-family: system-ui;
+          font-weight: bold;
+
+        }
+        
+        #myBtn:hover {
+          background: #ddd;
+          color: black;
+
+        }
+
+        #myNumber {
+            width: 60px;
+            text-align: center;
+            height: 35px;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        #msg{
+            right: 0%;
+        }
+        .title{
+            font-size: 40px;
+        }
+        #robo{
+            font-family: system-ui;
+            font-size: 35px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+    <body>
+    
+    <video autoplay id="myVideo" onended="onVideoEnded();">
+        <source src="videos/atlas.mp4" type="video/mp4">
+        Your browser does not support HTML5 video.
+    </video>
+    
+    <div class="content container">
+        <span id="robo">Robo-Timer</span>
+        <div>
+            <button id="myBtn" onclick="startTimer()">Start</button>
+            <input type="number" id="myNumber" value="15">
+        </div>
+        <span ></span>
+        <span ></span>
+        <span ></span>
+        <span ></span>
+
+        <div class="title">
+            <span id="msg">Lesson starts in </span>
+            <span id="timer">15:00</span>
+        </div>
+        
+    </div>
+    
+    <script>
+    var video = document.getElementById("myVideo");
+    var btn = document.getElementById("myBtn");
+    var input = document.getElementById("myNumber")
+    var timer = document.getElementById("timer")
+    var minutes;
+    var seconds;
+
+    var video_list      = ["atlas.mp4","spot.mp4", "stewart.mp4", "year.mp4", "doyou.mp4"];
+    var video_index     = 0;
+
+
+    function startTimer() {
+        if(btn.innerHTML=="Start"){
+            input.style.visibility = "hidden";
+            btn.innerHTML="Stop"
+            video.setAttribute("src", "videos/"+video_list[video_index]);
+            video.load();
+            video.play();
+
+        }else{
+            input.style.visibility = "visible";
+            btn.innerHTML="Start";
+            stop();
+            input.value = minutes
+            video.pause();
+            return;
+        }
+        minutes = parseInt(input.value);
+        seconds = 0
+        var value = minutes*60
+        var count = setInterval(function(){
+            if (value<=0){
+                stop();
+                timer.innerHTML = "any second now ...";
+                video.pause();
+                return;
+            }
+            value--;
+            minutes = Math.floor(value/60)
+            if (minutes<10){
+                minutes="0"+minutes;
+            }
+            seconds = value%60
+            if (seconds<10){
+                seconds = "0"+seconds;
+            }
+            timer.innerHTML = ""+minutes+":"+seconds
+
+        },1000)
+        stop = function(){
+            clearInterval(count)
+        }
+    }
+    function onVideoEnded(){
+            if(video_index < video_list.length - 1){
+                video_index++;
+            }
+            else{
+                video_index = 0;
+            }
+            video.setAttribute("src", "videos/"+video_list[video_index]);
+            video.play();
+        }
+    </script>
+    
+    </body>
+</html>
